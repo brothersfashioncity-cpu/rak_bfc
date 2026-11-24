@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BROTHERS FASHION CITY - Products Search</title>
+    <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800;900&family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --brand-blue: #0a4296;
+            --brand-blue-dark: #062b66;
+            --brand-blue-light: #155bc4;
+            --accent-blue: #0026ff;
+            --sky-tile: #26b4f5;
+            --surface: #ffffff;
+            --bg-light: #f1f5f9;
+            --text-dark: #0f172a;
+            --text-muted: #64748b;
+            --success: #16a34a;
+            --danger: #dc2626;
+            --border: #e2e8f0;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { background-color: var(--bg-light); color: var(--text-dark); font-family: 'Hind Siliguri', 'Segoe UI', sans-serif; min-height: 100vh; display: flex; flex-direction: column; }
+        .hero-header { background: linear-gradient(160deg, var(--brand-blue-light) 0%, var(--brand-blue) 55%, var(--brand-blue-dark) 100%); color: white; padding: 24px 16px 34px; text-align: center; box-shadow: 0 8px 24px rgba(10,66,150,.25); border-bottom-left-radius: 26px; border-bottom-right-radius: 26px; position: relative; }
+        .brand-logo-wrap { display: inline-flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-bottom: 14px; }
+        .brand-word { background: #fff; color: var(--brand-blue); font-family: 'Montserrat',sans-serif; font-weight: 900; font-size: 1.25rem; letter-spacing: 1.5px; padding: 4px 10px; border-radius: 4px; box-shadow: 0 4px 10px rgba(0,0,0,.18); text-transform: uppercase; }
+        .hero-title { font-family: 'Montserrat',sans-serif; font-size: 1.75rem; font-weight: 800; letter-spacing: .5px; margin: 4px 0 20px; text-shadow: 0 3px 10px rgba(0,0,0,.25); }
+        .action-tiles { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; max-width: 520px; margin: 0 auto; }
+        .tile-btn { border: 3px solid rgba(255,255,255,.22); border-radius: 16px; padding: 16px 8px; cursor: pointer; transition: all .22s cubic-bezier(.25,.8,.25,1); display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 112px; box-shadow: 0 6px 16px rgba(0,0,0,.2); position: relative; overflow: hidden; }
+        .tile-btn:hover { transform: translateY(-3px); box-shadow: 0 10px 22px rgba(0,0,0,.28); }
+        .tile-btn.active { border-color: #fff; transform: translateY(-3px) scale(1.03); box-shadow: 0 10px 24px rgba(0,0,0,.35),0 0 0 3px rgba(255,255,255,.35); }
+        .tile-search { background: linear-gradient(145deg,#1d4ed8,#0026ff); color: #fff; }
+        .tile-add { background: linear-gradient(145deg,#38bdf8,#0284c7); color: #fff; }
+        .tile-list { background: linear-gradient(145deg,#1e40af,#001fcc); color: #fff; }
+        .tile-icon { font-size: 2.3rem; line-height: 1; margin-bottom: 6px; filter: drop-shadow(0 3px 5px rgba(0,0,0,.22)); }
+        .tile-folder-badge { position: relative; display: inline-flex; align-items: center; justify-content: center; }
+        .tile-plus-overlay { position: absolute; font-size: 1.25rem; font-weight: 900; color: #062b66; top: 54%; left: 50%; transform: translate(-50%,-50%); }
+        .tile-label { font-family: 'Montserrat','Hind Siliguri',sans-serif; font-weight: 800; font-size: .92rem; letter-spacing: .3px; }
+        .tile-sub { font-size: .72rem; opacity: .9; margin-top: 2px; }
+        .container { max-width: 720px; width: 100%; margin: -14px auto 24px; padding: 0 14px; flex: 1; }
+        .card { background: var(--surface); border-radius: 16px; padding: 20px; box-shadow: 0 4px 20px rgba(15,23,42,.07); border: 1px solid var(--border); margin-bottom: 16px; }
+        .section { display: none; animation: fadeIn .2s ease-in-out; }
+        .section.active { display: block; }
+        @keyframes fadeIn { from {opacity:0;transform:translateY(4px)} to {opacity:1;transform:translateY(0)} }
+        label { display: block; font-weight: 700; margin-bottom: 7px; font-size: .96rem; color: var(--text-dark); }
+        .input-group { display: flex; gap: 8px; margin-bottom: 12px; }
+        input[type="text"] { width: 100%; min-width: 0; padding: 13px 14px; border: 1.5px solid #cbd5e1; border-radius: 10px; font-size: 1rem; background: #fff; color: var(--text-dark); transition: .2s; }
+        input:focus { outline: none; border-color: var(--brand-blue); box-shadow: 0 0 0 3px rgba(10,66,150,.12); }
+        .btn { padding: 12px 16px; border: none; border-radius: 10px; font-weight: 700; cursor: pointer; font-size: .94rem; display: inline-flex; align-items: center; justify-content: center; gap: 6px; transition: .18s; }
+        .btn-primary { background: var(--brand-blue); color: #fff; }
+        .btn-primary:hover { background: var(--brand-blue-dark); }
+        .btn-scan { background: #0f172a; color: #fff; white-space: nowrap; }
+        .btn-scan:hover { background: #1e293b; }
+        .btn-danger { background: var(--danger); color: #fff; padding: 7px 12px; font-size: .85rem; }
+        .btn-outline { background: #fff; border: 1.5px solid #cbd5e1; color: var(--text-dark); }
+        .btn-outline:hover { background: #f8fafc; border-color: var(--brand-blue); }
+        .btn-sm { padding: 7px 12px; font-size: .85rem; }
+        .breadcrumb { display: flex; align-items: center; flex-wrap: wrap; gap: 6px; background: #eff6ff; border: 1px solid #bfdbfe; padding: 10px 14px; border-radius: 10px; margin-bottom: 16px; font-size: .95rem; font-weight: 700; color: var(--brand-blue-dark); }
+        .breadcrumb span.link { cursor: pointer; text-decoration: underline; color: var(--brand-blue); }
+        .folder-grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(145px,1fr)); gap: 12px; margin-top: 12px; }
+        .folder-card { background: #f8fafc; border: 1.5px solid #cbd5e1; border-radius: 12px; padding: 16px 10px; text-align: center; cursor: pointer; transition: .18s; position: relative; }
+        .folder-card:hover { border-color: var(--brand-blue); background: #eff6ff; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(10,66,150,.1); }
+        .folder-icon { font-size: 2rem; margin-bottom: 5px; }
+        .folder-name { font-weight: 700; font-size: 1.02rem; color: var(--text-dark); word-break: break-word; }
+        .folder-sub { font-size: .82rem; color: var(--text-muted); margin-top: 4px; }
+        .folder-del-btn { position: absolute; top: 7px; right: 7px; background: #fee2e2; color: #dc2626; border: none; border-radius: 6px; padding: 3px 7px; font-size: .75rem; font-weight: bold; cursor: pointer; }
+        .active-box-banner { background: #ecfdf5; border: 2px solid var(--success); border-radius: 12px; padding: 14px 16px; margin-bottom: 14px; }
+        .entry-box { background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 12px; padding: 14px; margin-bottom: 12px; }
+        .entry-box.scan-mode { border-left: 5px solid #0f172a; }
+        .entry-box.manual-mode { border-left: 5px solid var(--brand-blue); }
+        .scan-feedback { padding: 11px; border-radius: 10px; margin-bottom: 12px; font-weight: 700; text-align: center; display: none; }
+        .typing-status { font-size: .84rem; color: var(--brand-blue); font-weight: 700; margin-top: -4px; min-height: 18px; }
+        .result-box { margin-top: 16px; padding: 20px; border-radius: 14px; background: #eff6ff; border: 2px solid var(--brand-blue); text-align: center; }
+        .location-path { display: inline-block; background: linear-gradient(135deg,var(--brand-blue-light),var(--brand-blue-dark)); color: #fff; font-size: 1.35rem; font-weight: 700; padding: 12px 22px; border-radius: 10px; margin: 10px 0; line-height: 1.5; box-shadow: 0 4px 12px rgba(10,66,150,.25); }
+        #scanner-container { display: none; margin-bottom: 16px; background: #000; border-radius: 14px; overflow: hidden; box-shadow: 0 6px 18px rgba(0,0,0,.2); }
+        #reader { width: 100%; }
+        .item-list { list-style: none; padding: 0; margin: 0; }
+        .item-card { display: flex; justify-content: space-between; align-items: center; padding: 12px 10px; border-bottom: 1px solid var(--border); gap: 10px; }
+        .item-card:last-child { border-bottom: none; }
+        .tag { background: #dbeafe; color: var(--brand-blue-dark); padding: 4px 10px; border-radius: 6px; font-size: .84rem; font-weight: 700; display: inline-block; margin-bottom: 4px; }
+        .backup-bar { display: flex; gap: 8px; margin-top: 16px; }
+        footer { text-align: center; padding: 14px; font-size: .85rem; color: var(--text-muted); font-weight: 600; }
+        @media(max-width:420px) { .hero-title{font-size:1.4rem}.tile-btn{min-height:100px;padding:12px 4px}.tile-label{font-size:.78rem}.card{padding:15px}.input-group{gap:6px}.btn{padding:11px 10px;font-size:.86rem}.location-path{font-size:1.1rem;padding:10px 14px} }
+    </style>
+</head>
+<body>
+<div class="hero-header">
+    <div class="brand-logo-wrap"><span class="brand-word">BROTHERS</span><span class="brand-word">FASHION</span><span class="brand-word">CITY</span></div>
+    <div class="hero-title">Products Search</div>
+    <div class="action-tiles">
+        <button class="tile-btn tile-search active" id="tile-search-tab" onclick="switchTab('search-tab', this)"><div class="tile-icon">🔍</div><div class="tile-label">Search</div><div class="tile-sub">মাল খুঁজুন</div></button>
+        <button class="tile-btn tile-add" id="tile-store-tab" onclick="switchTab('store-tab', this)"><div class="tile-icon tile-folder-badge">🗂️<span class="tile-plus-overlay">+</span></div><div class="tile-label">Add Stock</div><div class="tile-sub">স্টোর ও বক্স</div></button>
+        <button class="tile-btn tile-list" id="tile-list-tab" onclick="switchTab('list-tab', this)"><div class="tile-icon">📋</div><div class="tile-label">All List</div><div class="tile-sub">সব তালিকা</div></button>
+    </div>
+</div>
+<div class="container">
+    <div id="scanner-container"><div id="reader"></div><button class="btn btn-danger" style="width:100%;border-radius:0" onclick="stopScanner()">✖ ক্যামেরা বন্ধ করুন</button></div>
+    <div id="search-tab" class="section active"><div class="card">
+        <label>বারকোড স্ক্যান করুন বা কোড লিখুন:</label>
+        <div class="input-group"><input type="text" id="search-barcode" placeholder="এখানে বারকোড স্ক্যান করুন..." autofocus oninput="findProduct()"><button class="btn btn-scan" onclick="startScanner('search-barcode')">📷 স্ক্যান</button></div>
+        <p style="font-size:.86rem;color:var(--text-muted)">* বারকোড স্ক্যান করলেই কোন স্টোর রুমের, কোন র‍্যাকের, কোন বক্সে মাল আছে তা দেখাবে।</p><div id="search-result"></div>
+    </div></div>
+    <div id="store-tab" class="section"><div class="card"><div id="breadcrumb-bar" class="breadcrumb"></div><div id="store-explorer-content"></div></div></div>
+    <div id="list-tab" class="section"><div class="card">
+        <div class="input-group"><input type="text" id="filter-list" placeholder="স্টোর, র‍্যাক, বক্স বা বারকোড লিখে খুঁজুন..." oninput="renderAllList()"></div>
+        <div id="all-inventory-list"></div>
+        <div class="backup-bar"><button class="btn btn-outline" style="flex:1" onclick="exportData()">⬇ ব্যাকআপ সেভ</button><button class="btn btn-outline" style="flex:1" onclick="document.getElementById('import-file').click()">⬆ ব্যাকআপ রিস্টোর</button><input type="file" id="import-file" style="display:none" accept=".json" onchange="importData(event)"></div>
+    </div></div>
+</div>
+<footer>© Brothers Fashion City | bfcbd.shop</footer>
+<script>
+let storeData = JSON.parse(localStorage.getItem('hierarchical_store_db')) || {rooms:[],racks:[],boxes:[],items:[]};
+let navState={roomId:null,rackId:null,boxId:null};
+let html5QrCode=null,currentTargetInput=null,manualSaveTimer=null,lastActiveMode='scan';
+function saveDB(){localStorage.setItem('hierarchical_store_db',JSON.stringify(storeData))}
+function switchTab(tabId,btn){stopScanner();clearTimeout(manualSaveTimer);document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));document.querySelectorAll('.tile-btn').forEach(b=>b.classList.remove('active'));document.getElementById(tabId).classList.add('active');btn.classList.add('active');if(tabId==='search-tab')document.getElementById('search-barcode').focus();else if(tabId==='store-tab')renderStoreExplorer();else if(tabId==='list-tab')renderAllList()}
+function goToRoot(){stopScanner();clearTimeout(manualSaveTimer);navState={roomId:null,rackId:null,boxId:null};renderStoreExplorer()}
+function openRoom(roomId){stopScanner();clearTimeout(manualSaveTimer);navState={roomId,rackId:null,boxId:null};renderStoreExplorer()}
+function openRack(rackId){stopScanner();clearTimeout(manualSaveTimer);navState.rackId=rackId;navState.boxId=null;renderStoreExplorer()}
+function openBox(boxId){stopScanner();clearTimeout(manualSaveTimer);navState.boxId=boxId;lastActiveMode='scan';renderStoreExplorer()}
+function handleManualInput(){clearTimeout(manualSaveTimer);lastActiveMode='manual';const input=document.getElementById('manual-barcode-input'),statusEl=document.getElementById('manual-typing-status');if(!input)return;const val=input.value.trim();if(!val){if(statusEl)statusEl.innerText='';return}if(statusEl)statusEl.innerText='⏳ লেখা শেষ হলে ১.৫ সেকেন্ড পর অটো সেভ হবে...';manualSaveTimer=setTimeout(()=>saveBarcodeToBox(val,'manual'),1500)}
+function handleScanInput(){lastActiveMode='scan';const input=document.getElementById('scan-barcode-input');if(!input)return;const val=input.value.trim();if(val)saveBarcodeToBox(val,'scan')}
+function renderStoreExplorer(){
+ const breadcrumb=document.getElementById('breadcrumb-bar'),content=document.getElementById('store-explorer-content');
+ const room=storeData.rooms.find(r=>r.id===navState.roomId),rack=storeData.racks.find(rk=>rk.id===navState.rackId),box=storeData.boxes.find(b=>b.id===navState.boxId);
+ let bcHtml=`<span class="link" onclick="goToRoot()">🏬 সব স্টোর রুম</span>`;
+ if(room)bcHtml+=` <span>/</span> <span class="link" onclick="openRoom('${room.id}')">${escapeHTML(room.name)}</span>`;
+ if(rack)bcHtml+=` <span>/</span> <span class="link" onclick="openRack('${rack.id}')">${escapeHTML(rack.name)}</span>`;
+ if(box)bcHtml+=` <span>/</span> <span>📦 ${escapeHTML(box.name)}</span>`;
+ breadcrumb.innerHTML=bcHtml;
+ if(!room){
+  let html=`<label>নতুন স্টোর রুম তৈরি করুন:</label><div class="input-group"><input type="text" id="new-room-name" placeholder="যেমন: স্টোর রুম ১ বা নিচতলা গোডাউন" onkeypress="if(event.key==='Enter')addRoom()"><button class="btn btn-primary" onclick="addRoom()">➕ যোগ করুন</button></div><div style="font-size:.92rem;color:var(--text-muted);font-weight:600">ভেতরে ঢুকতে স্টোর রুমের ওপর ক্লিক করুন:</div><div class="folder-grid">`;
+  if(!storeData.rooms.length)html+=`<p style="color:var(--text-muted);grid-column:1/-1;padding:12px 0">কোনো স্টোর রুম তৈরি করা হয়নি। উপরে নাম লিখে যোগ করুন।</p>`;
+  else storeData.rooms.forEach(r=>{const count=storeData.racks.filter(x=>x.roomId===r.id).length;html+=`<div class="folder-card" onclick="openRoom('${r.id}')"><button class="folder-del-btn" onclick="event.stopPropagation();deleteRoom('${r.id}')">✖</button><div class="folder-icon">🏬</div><div class="folder-name">${escapeHTML(r.name)}</div><div class="folder-sub">${count}টি র‍্যাক</div></div>`});
+  content.innerHTML=html+'</div>';
+ }else if(!rack){
+  const rows=storeData.racks.filter(x=>x.roomId===room.id);let html=`<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px"><strong>🏬 ${escapeHTML(room.name)} — এর ভেতরের র‍্যাকসমূহ</strong><button class="btn btn-outline btn-sm" onclick="goToRoot()">⬅ পেছনে</button></div><label>এই রুমে নতুন র‍্যাক যোগ করুন:</label><div class="input-group"><input type="text" id="new-rack-name" placeholder="র‍্যাক নাম্বার বা নাম লিখুন..." onkeypress="if(event.key==='Enter')addRack()"><button class="btn btn-primary" onclick="addRack()">➕ র‍্যাক যোগ</button></div><div style="font-size:.92rem;color:var(--text-muted);font-weight:600">ভেতরে ঢুকতে র‍্যাকের ওপর ক্লিক করুন:</div><div class="folder-grid">`;
+  if(!rows.length)html+=`<p style="color:var(--text-muted);grid-column:1/-1;padding:12px 0">এই স্টোর রুমে কোনো র‍্যাক নেই। উপরে র‍্যাক যোগ করুন।</p>`;
+  else rows.forEach(r=>{const count=storeData.boxes.filter(x=>x.rackId===r.id).length;html+=`<div class="folder-card" onclick="openRack('${r.id}')"><button class="folder-del-btn" onclick="event.stopPropagation();deleteRack('${r.id}')">✖</button><div class="folder-icon">🗄️</div><div class="folder-name">${escapeHTML(r.name)}</div><div class="folder-sub">${count}টি বক্স</div></div>`});
+  content.innerHTML=html+'</div>';
+ }else if(!box){
+  const boxes=storeData.boxes.filter(x=>x.rackId===rack.id);let html=`<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px"><strong>🗄️ ${escapeHTML(rack.name)} — এর ভেতরের বক্সসমূহ</strong><button class="btn btn-outline btn-sm" onclick="openRoom('${room.id}')">⬅ পেছনে</button></div><label>এই র‍্যাকে নতুন বক্স যোগ করুন:</label><div class="input-group"><input type="text" id="new-box-name" placeholder="বক্স নাম্বার বা নাম লিখুন..." onkeypress="if(event.key==='Enter')addBox()"><button class="btn btn-primary" onclick="addBox()">➕ বক্স যোগ</button></div><div style="font-size:.92rem;color:var(--text-muted);font-weight:600">মাল রাখতে বক্সের ওপর ক্লিক করে ওপেন করুন:</div><div class="folder-grid">`;
+  if(!boxes.length)html+=`<p style="color:var(--text-muted);grid-column:1/-1;padding:12px 0">এই র‍্যাকে কোনো বক্স নেই। উপরে বক্স যোগ করুন।</p>`;
+  else boxes.forEach(b=>{const count=storeData.items.filter(x=>x.boxId===b.id).length;html+=`<div class="folder-card" onclick="openBox('${b.id}')"><button class="folder-del-btn" onclick="event.stopPropagation();deleteBox('${b.id}')">✖</button><div class="folder-icon">📦</div><div class="folder-name">${escapeHTML(b.name)}</div><div class="folder-sub">${count}টি প্রোডাক্ট</div></div>`});
+  content.innerHTML=html+'</div>';
+ }else{
+  const items=storeData.items.filter(i=>i.boxId===box.id);let html=`<div class="active-box-banner"><div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><div><div style="font-size:.84rem;color:#166534;font-weight:600">${escapeHTML(room.name)} ➔ ${escapeHTML(rack.name)}</div><div style="font-size:1.22rem;font-weight:800;color:#14532d">📦 ${escapeHTML(box.name)} (ওপেন করা আছে)</div></div><button class="btn btn-outline btn-sm" onclick="openRack('${rack.id}')">⬅ বক্স বন্ধ করুন</button></div></div><div id="scan-feedback" class="scan-feedback"></div>
+  <div class="entry-box scan-mode"><label>📷 ১. বারকোড স্ক্যান করুন (স্ক্যান করা মাত্রই সাথে সাথে সেভ হবে):</label><div class="input-group" style="margin-bottom:4px"><input type="text" id="scan-barcode-input" placeholder="স্ক্যানার মেশিন দিয়ে স্ক্যান করুন..." onchange="handleScanInput()" onkeypress="if(event.key==='Enter')handleScanInput()"><button class="btn btn-scan" onclick="startScanner('scan-barcode-input')">📷 ক্যামেরা</button></div></div>
+  <div class="entry-box manual-mode"><label>⌨️ ২. ম্যানুয়াল কোড লিখুন (লেখা শেষ হলে ১-২ সেকেন্ড পর অটো সেভ হবে):</label><div class="input-group" style="margin-bottom:8px"><input type="text" id="manual-barcode-input" placeholder="হাতে কোড টাইপ করুন..." oninput="handleManualInput()"></div><div id="manual-typing-status" class="typing-status"></div></div>
+  <div style="border-top:1px solid var(--border);padding-top:12px"><strong style="font-size:.98rem">এই বক্সে থাকা প্রোডাক্টসমূহ (${items.length}টি):</strong><div style="margin-top:8px">`;
+  if(!items.length)html+=`<p style="color:var(--text-muted);font-size:.9rem">এই বক্সে এখনো কোনো প্রোডাক্ট যোগ করা হয়নি।</p>`;
+  else{html+='<ul class="item-list">';items.forEach((item,i)=>{html+=`<li class="item-card"><div style="font-weight:700;font-size:1.02rem">${i+1}. 🏷️ ${escapeHTML(item.barcode)}</div><button class="btn btn-danger" onclick="deleteItem('${item.id}',true)">🗑 ডিলিট</button></li>`});html+='</ul>'}
+  content.innerHTML=html+'</div></div>';
+  setTimeout(()=>{const el=document.getElementById(lastActiveMode==='manual'?'manual-barcode-input':'scan-barcode-input');if(el)el.focus()},50);
+ }
+}
+function escapeHTML(value){return String(value).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function addRoom(){const input=document.getElementById('new-room-name'),name=input.value.trim();if(!name)return;storeData.rooms.push({id:'room_'+Date.now(),name});saveDB();renderStoreExplorer()}
+function deleteRoom(id){if(!confirm('এই স্টোর রুম ডিলিট করলে এর ভেতরের সব র‍্যাক, বক্স ও মাল মুছে যাবে। নিশ্চিত?'))return;const rackIds=storeData.racks.filter(x=>x.roomId===id).map(x=>x.id),boxIds=storeData.boxes.filter(x=>x.roomId===id).map(x=>x.id);storeData.rooms=storeData.rooms.filter(x=>x.id!==id);storeData.racks=storeData.racks.filter(x=>x.roomId!==id);storeData.boxes=storeData.boxes.filter(x=>x.roomId!==id);storeData.items=storeData.items.filter(x=>!rackIds.includes(x.rackId)&&!boxIds.includes(x.boxId));saveDB();renderStoreExplorer()}
+function addRack(){const name=document.getElementById('new-rack-name').value.trim();if(!name||!navState.roomId)return;storeData.racks.push({id:'rack_'+Date.now(),roomId:navState.roomId,name});saveDB();renderStoreExplorer()}
+function deleteRack(id){if(!confirm('এই র‍্যাক ডিলিট করলে এর ভেতরের সব বক্স ও মাল মুছে যাবে। নিশ্চিত?'))return;const boxIds=storeData.boxes.filter(x=>x.rackId===id).map(x=>x.id);storeData.racks=storeData.racks.filter(x=>x.id!==id);storeData.boxes=storeData.boxes.filter(x=>x.rackId!==id);storeData.items=storeData.items.filter(x=>!boxIds.includes(x.boxId)&&x.rackId!==id);saveDB();renderStoreExplorer()}
+function addBox(){const name=document.getElementById('new-box-name').value.trim();if(!name||!navState.roomId||!navState.rackId)return;storeData.boxes.push({id:'box_'+Date.now(),roomId:navState.roomId,rackId:navState.rackId,name});saveDB();renderStoreExplorer()}
+function deleteBox(id){if(!confirm('এই বক্স ডিলিট করলে এর ভেতরের সব মাল মুছে যাবে। নিশ্চিত?'))return;storeData.boxes=storeData.boxes.filter(x=>x.id!==id);storeData.items=storeData.items.filter(x=>x.boxId!==id);saveDB();renderStoreExplorer()}
+function saveBarcodeToBox(barcode,mode){clearTimeout(manualSaveTimer);if(!barcode||!navState.boxId)return;lastActiveMode=mode;const exists=storeData.items.some(i=>i.boxId===navState.boxId&&i.barcode.toLowerCase()===barcode.toLowerCase());if(exists){renderStoreExplorer();const el=document.getElementById('scan-feedback');if(el){el.style.display='block';el.style.background='#fef9c3';el.style.color='#854d0e';el.innerText=`⚠️ "${barcode}" আগেই এই বক্সে যুক্ত আছে!`}return}
+storeData.items.unshift({id:'item_'+Date.now()+Math.random(),roomId:navState.roomId,rackId:navState.rackId,boxId:navState.boxId,barcode});saveDB();renderStoreExplorer();const el=document.getElementById('scan-feedback');if(el){el.style.display='block';el.style.background='#dcfce7';el.style.color='#166534';el.innerText=`✅ "${barcode}" অটোমেটিক সেভ হয়েছে!`}}
+function deleteItem(id,fromExplorer=false){if(!fromExplorer&&!confirm('প্রোডাক্টটি ডিলিট করে দিবেন?'))return;storeData.items=storeData.items.filter(x=>x.id!==id);saveDB();if(fromExplorer)renderStoreExplorer();else{findProduct();renderAllList()}}
+function getFullLocation(item){return{room:storeData.rooms.find(x=>x.id===item.roomId)?.name||'অজানা স্টোর',rack:storeData.racks.find(x=>x.id===item.rackId)?.name||'অজানা র‍্যাক',box:storeData.boxes.find(x=>x.id===item.boxId)?.name||'অজানা বক্স'}}
+function findProduct(){const query=document.getElementById('search-barcode').value.trim(),div=document.getElementById('search-result');if(!query){div.innerHTML='';return}const matches=storeData.items.filter(i=>i.barcode.toLowerCase()===query.toLowerCase());if(!matches.length){div.innerHTML='<div class="result-box" style="border-color:#dc2626;background:#fef2f2"><strong style="color:#dc2626;font-size:1.1rem">❌ এই বারকোডের কোনো মাল স্টোরে পাওয়া যায়নি!</strong></div>';return}let html='';matches.forEach(item=>{const loc=getFullLocation(item);html+=`<div class="result-box"><div style="font-size:.96rem;color:#475569">বারকোড: <strong>${escapeHTML(item.barcode)}</strong></div><div style="margin-top:6px;font-weight:700">মালটি রাখা আছে:</div><div class="location-path">🏬 ${escapeHTML(loc.room)}<br>🗄️ ${escapeHTML(loc.rack)} ➔ 📦 ${escapeHTML(loc.box)}</div><div style="margin-top:10px"><button class="btn btn-danger" onclick="deleteFoundItem('${item.id}')">🗑 মাল শেষ (ডিলিট করুন)</button></div></div>`});div.innerHTML=html}
+function deleteFoundItem(id){if(confirm('মাল শেষ হয়ে গেছে? তালিকা থেকে ডিলিট করে দিবেন?')){storeData.items=storeData.items.filter(x=>x.id!==id);saveDB();findProduct()}}
+function renderAllList(){const filter=document.getElementById('filter-list').value.trim().toLowerCase(),div=document.getElementById('all-inventory-list'),filtered=storeData.items.filter(item=>{const loc=getFullLocation(item);return item.barcode.toLowerCase().includes(filter)||loc.room.toLowerCase().includes(filter)||loc.rack.toLowerCase().includes(filter)||loc.box.toLowerCase().includes(filter)});if(!filtered.length){div.innerHTML='<p style="text-align:center;color:var(--text-muted);padding:16px 0">কোনো তথ্য পাওয়া যায়নি।</p>';return}let html='<ul class="item-list">';filtered.forEach(item=>{const loc=getFullLocation(item);html+=`<li class="item-card"><div><span class="tag">🏬 ${escapeHTML(loc.room)} ➔ 🗄️ ${escapeHTML(loc.rack)} ➔ 📦 ${escapeHTML(loc.box)}</span><div style="font-weight:700;font-size:1.02rem">🏷️ ${escapeHTML(item.barcode)}</div></div><button class="btn btn-danger" onclick="deleteItem('${item.id}',false)">🗑 ডিলিট</button></li>`});div.innerHTML=html+'</ul>'}
+function startScanner(targetInputId){currentTargetInput=targetInputId;const container=document.getElementById('scanner-container');container.style.display='block';if(!html5QrCode)html5QrCode=new Html5Qrcode('reader');html5QrCode.start({facingMode:'environment'},{fps:10,qrbox:{width:250,height:150}},decodedText=>{if(currentTargetInput==='search-barcode'){const el=document.getElementById('search-barcode');if(el)el.value=decodedText;stopScanner();findProduct()}else if(currentTargetInput==='scan-barcode-input'){saveBarcodeToBox(decodedText,'scan')}},()=>{}).catch(()=>{alert('ক্যামেরা চালু করা যায়নি! HTTPS বা লোকালহোস্ট ছাড়া ক্যামেরা কাজ নাও করতে পারে।');container.style.display='none'})}
+function stopScanner(){const container=document.getElementById('scanner-container');if(html5QrCode&&html5QrCode.isScanning){html5QrCode.stop().then(()=>container.style.display='none').catch(()=>container.style.display='none')}else container.style.display='none'}
+function exportData(){const blob=new Blob([JSON.stringify(storeData,null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='brothers_fashion_city_store_backup.json';document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(url)}
+function importData(event){const file=event.target.files[0];if(!file)return;const reader=new FileReader();reader.onload=e=>{try{const data=JSON.parse(e.target.result);if(data&&Array.isArray(data.rooms)&&Array.isArray(data.racks)&&Array.isArray(data.boxes)&&Array.isArray(data.items)){storeData=data;saveDB();renderAllList();alert('✅ ব্যাকআপ সফলভাবে রিস্টোর হয়েছে!')}else alert('❌ ফাইল ফরম্যাট সঠিক নয়!')}catch(err){alert('❌ ভুল ফাইল নির্বাচন করেছেন!')}event.target.value=''};reader.readAsText(file)}
+</script>
+</body>
+</html>
